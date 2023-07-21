@@ -448,40 +448,7 @@ unsigned int dUpdateHopping(double pf_A, dMatrix const *A_inv, dMatrix *B_inv, d
   dVector X;
   init_dVector(&X,N);  
   dMatrixVectorProduct(B_inv,bm, 1.0,&X);
-  
-/*  implementation 1:
-  int j=0, i=0;
-  for(i=0;i<N;i++){
-    for(j=0;j<N;j++){
-      if((i!=alpha) && (j!=alpha)) {
-        ELEM(B_inv, i, j) += (1./(X.data[alpha])) * ( -X.data[i]*ELEM(A_inv, alpha, j) + X.data[j]*ELEM(A_inv, alpha, i) ); 
-      }
-      else{
-        ELEM(B_inv, i, j) *= (1./(X.data[alpha]));       
-      }
-    }
-  }
-*/
-  
-/*  implementation 2:
-  int j=0, i=0;
-  for(i=0;i<N;i++){
-    for(j=0;j<N;j++){
-      //if((i!=alpha) && (j!=alpha)) {
-        ELEM(B_inv, i, j) += (1./(X.data[alpha])) * ( -X.data[i]*ELEM(A_inv, alpha, j) + X.data[j]*ELEM(A_inv, alpha, i) ); 
-
-      //kronecker i,alpha:
-      if(i==alpha) {
-        ELEM(B_inv, i, j) += (1./(X.data[alpha])) * ( ELEM(A_inv, i, j) ); 
-      }
-      //kronecker j,alpha:
-      if(j==alpha) {
-        ELEM(B_inv, i, j) += (1./(X.data[alpha])) * ( ELEM(A_inv, i, j) ); 
-      }
-    }
-  }
-*/
-  
+    
   //implementation 3, no loop:
   unsigned int inc = 1;
   double factor_pos = (1./(X.data[alpha]));
@@ -499,7 +466,6 @@ unsigned int dUpdateHopping(double pf_A, dMatrix const *A_inv, dMatrix *B_inv, d
   // adding row alpha of A_inv to B_inv
   daxpy_(&N, &factor_pos, &A_inv->data[N*alpha], &inc, &B_inv->data[N*alpha], &inc);
 
-  //if(verbose) {printf("\nX.data[alpha]= % 4.5f\n", X.data[alpha]);}
       
   return 0;
 }
